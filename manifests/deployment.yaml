@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-kubectl-bot
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-kubectl-bot
+  template:
+    metadata:
+      labels:
+        app: k8s-kubectl-bot
+    spec:
+      serviceAccountName: k8s-kubectl-bot-sa
+      containers:
+      - name: bot
+        image: pinoogni/k8s-kubectl-bot:0.1.0
+        imagePullPolicy: Always
+        env:
+        - name: K8S_KUBECTL_BOT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: k8s-kubectl-bot-secret
+              key: K8S_KUBECTL_BOT_TOKEN
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
